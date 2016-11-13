@@ -1,9 +1,12 @@
 apply plugin: 'com.android.library'
-
+ext {
+    PUBLISH_GROUP_ID = 'com.eltaher'
+    PUBLISH_ARTIFACT_ID = 'azan'
+    PUBLISH_VERSION = '2.1'
+}
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 25
@@ -29,3 +32,4 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
 }
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

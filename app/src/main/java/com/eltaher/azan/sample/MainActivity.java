@@ -17,7 +17,7 @@ import java.util.GregorianCalendar;
 
 import sample.azan.eltaher.com.azan.R;
 
-import static com.azan.types.AngleCalculationType.EGYPT;
+import static com.azan.types.AngleCalculationType.KARACHI;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void azan() {
         GregorianCalendar date = new GregorianCalendar();
-        PrayerTimes prayerTimes = new TimeCalculator().date(date).location(-6.38043079, 106.85337984, 0, 7).timeCalculationMethod(EGYPT).calculateTimes();
+        System.out.println(date.getTimeInMillis());
+        PrayerTimes prayerTimes = new TimeCalculator().date(date).location(52.520008,  13.404954,
+            0, 0).timeCalculationMethod(KARACHI).calculateTimes();
         prayerTimes.setUseSecond(true);
         System.out.println(prayerTimes.getPrayTime(PrayersType.FAJR));
         System.out.println(prayerTimes.getPrayTime(PrayersType.SUNRISE));
