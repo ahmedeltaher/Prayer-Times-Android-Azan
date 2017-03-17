@@ -1,4 +1,8 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.ahmedeltaher'
+
 ext {
     PUBLISH_GROUP_ID = 'com.eltaher'
     PUBLISH_ARTIFACT_ID = 'azan'

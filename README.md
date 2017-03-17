@@ -3,6 +3,8 @@
 
 [![Android Arsenal](https://img.shields.io/badge/Android-Time%20Prayer-brightgreen.svg)](https://android-arsenal.com/details/1/5099)
 ![LICENSE](https://img.shields.io/badge/License-Apache%20License%20V2.0-brightgreen.svg)
+![Build](https://img.shields.io/badge/Azan-jitpack.io-blue.svg)
+
 
 **what is azan ?** 
 
@@ -38,8 +40,27 @@ you can determin your latitude, longitude, timezone, height, The Way of Calculat
 ## How to use ?
 
 Add it to dependencies in your gradle file 
-```compile 'com.eltaher:azan:2.1'```
 
+- Add it in your root `build.gradle` at the end of repositories:
+
+  - in your `allprojects` section , you have to add  `maven { url 'https://jitpack.io' }` 
+ 
+```
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+ 
+ - in your `build.gradle` in your `app` module , Add the dependency `compile 'com.github.ahmedeltaher:Azan:2.1'` . 
+ 
+ ```
+ 	dependencies {
+ 	        compile 'com.github.ahmedeltaher:Azan:2.1'
+ 	}
+ ```
 
 **Example how to get prayer times**
 
