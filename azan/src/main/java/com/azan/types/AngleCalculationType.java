@@ -26,7 +26,7 @@ public enum AngleCalculationType {
         this.isha = isha;
     }
 
-    public double getFairAngle() {
+    public double getFajrAngle() {
         return fajr;
     }
 

@@ -131,13 +131,13 @@ public class TimeCalculator {
         double latitude = this.latitude;
         return new PrayerTimes((long) (julianDay - JAVA_DATE_EPOCH_JD) * HOURS_IN_DAY * MINUTE_IN_HOUR *
             SECOND_IN_MINUTE * MILLIS_IN_SECOND,
-            fajr(transit, latitude, declinationDegrees, angle.getFairAngle()) + adjustments
+            fajr(transit, latitude, declinationDegrees, angle.getFajrAngle()) + adjustments
                 .getFajr() / MINUTE_IN_HOUR_DOUBLE,
             sunrise(transit, latitude, declinationDegrees, this.height) + adjustments.getSunrise() / MINUTE_IN_HOUR_DOUBLE,
             transit + adjustments.getZuhr() / MINUTE_IN_HOUR_DOUBLE,
             asr(transit, latitude, declinationDegrees, this.asrRatio) + adjustments.getAsr() / MINUTE_IN_HOUR_DOUBLE,
             maghrib(transit, latitude, declinationDegrees, this.height) + adjustments.getMaghrib() / MINUTE_IN_HOUR_DOUBLE,
-            isha(transit, latitude, declinationDegrees, angle.getFairAngle()) + adjustments.getIsha() / MINUTE_IN_HOUR_DOUBLE);
+            isha(transit, latitude, declinationDegrees, angle.getIshaAngle()) + adjustments.getIsha() / MINUTE_IN_HOUR_DOUBLE);
     }
 
 }
