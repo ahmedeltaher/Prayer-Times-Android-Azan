@@ -18,6 +18,9 @@ import java.util.GregorianCalendar;
 import sample.azan.eltaher.com.azan.R;
 
 import static com.azan.types.AngleCalculationType.KARACHI;
+import static com.azan.types.AngleCalculationType.MUHAMMADIYAH;
+import static com.azan.types.AngleCalculationType.MWL;
+import static com.azan.types.AngleCalculationType.UMM_AL_QURA;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+                        .setAction("Action", null).show();
             }
         });
         azan();
@@ -64,13 +67,16 @@ public class MainActivity extends AppCompatActivity {
     public void azan() {
         GregorianCalendar date = new GregorianCalendar();
         System.out.println(date.getTimeInMillis());
-        PrayerTimes prayerTimes = new TimeCalculator().date(date).location(52.520008,  13.404954,
-            0, 0).timeCalculationMethod(KARACHI).calculateTimes();
+        PrayerTimes prayerTimes = new TimeCalculator().date(date).location(52.520008, 13.404954,
+                0, 0).timeCalculationMethod(MUHAMMADIYAH).umElQuraRamadanAdjustment(false).calculateTimes();
         prayerTimes.setUseSecond(true);
-        System.out.println(prayerTimes.getPrayTime(PrayersType.FAJR));
-        System.out.println(prayerTimes.getPrayTime(PrayersType.SUNRISE));
-        System.out.println(prayerTimes.getPrayTime(PrayersType.ZUHR));
-        System.out.println(prayerTimes.getPrayTime(PrayersType.MAGHRIB));
-        System.out.println(prayerTimes.getPrayTime(PrayersType.ISHA));
+        System.out.println("----------------------------------------");
+        System.out.println("Fajr ---> " + prayerTimes.getPrayTime(PrayersType.FAJR));
+        System.out.println("sunrise --->" + prayerTimes.getPrayTime(PrayersType.SUNRISE));
+        System.out.println("Zuhr --->" + prayerTimes.getPrayTime(PrayersType.ZUHR));
+        System.out.println("Asr --->" + prayerTimes.getPrayTime(PrayersType.ASR));
+        System.out.println("Maghrib --->" + prayerTimes.getPrayTime(PrayersType.MAGHRIB));
+        System.out.println("ISHA  --->" + prayerTimes.getPrayTime(PrayersType.ISHA));
+        System.out.println("----------------------------------------");
     }
 }

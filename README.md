@@ -37,6 +37,22 @@ Library aiming to calculate prayer time with one line code , if you implement pr
 you can determin your latitude, longitude, timezone, height, The Way of Calculation .
 
 
+## Supported Calculation Methods :
+
+| Method Name                                          | Fajr Angel           | Isha Angel                                    |
+|:----------------------------------------------------:|:--------------------:|:---------------------------------------------:|
+| Umm al-Qura University, Makkah                       | 18.5                 | 90 min after Maghrib , 120 min during Ramadan |
+| MUHAMMADIYAH                                         | 20                   | 18                                            |
+| Muslim World League (MWL)                            | 18                   | 17                                            |
+| Egyptian General Authority of Survey                 | 19.5                 | 17.5                                          |
+| University of Islamic Sciences, Karachi              | 18                   | 18                                            |
+| Islamic Society of North America (ISNA)              | 15                   | 15                                            |
+| Ithna Ashari                                         | 16	                  | 14                                            |
+| Institute of Geophysics, University of Tehran        | 17.7                 | 14                                            |
+| UOIF (Union des organisations islamiques de France)  | 12                   | 12                                            |
+| Kuwait Calc method                                   | 18                   | 17.5                                          |
+
+
 ## How to use ?
 
 Add it to dependencies in your gradle file 

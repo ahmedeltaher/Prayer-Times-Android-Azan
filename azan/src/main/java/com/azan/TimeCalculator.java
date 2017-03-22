@@ -1,6 +1,7 @@
 package com.azan;
 
 import com.azan.types.AngleCalculationType;
+import com.azan.types.PrayersType;
 import com.azan.util.JulianDayUtil;
 
 import java.util.Date;
@@ -21,6 +22,7 @@ import static com.azan.PrayerCalculator.isha;
 import static com.azan.PrayerCalculator.maghrib;
 import static com.azan.PrayerCalculator.sunrise;
 import static com.azan.PrayerCalculator.zuhr;
+import static com.azan.types.AngleCalculationType.UMM_AL_QURA;
 import static com.azan.types.BaseTimeAdjustmentType.TWO_MINUTES_ZUHR;
 import static com.azan.util.JulianDayUtil.adjustJdHour;
 import static java.util.GregorianCalendar.DAY_OF_MONTH;
@@ -33,6 +35,8 @@ public class TimeCalculator {
      * Julian Day of 1970-01-01 midday.
      */
     private static final double JAVA_DATE_EPOCH_JD = 2440588;
+    private static final double UMM_AL_QURA_RAMADAN_ISHA_ADJUSTMENT = 2;
+    private static final double UMM_AL_QURA_ISHA_ADJUSTMENT = 1.5;
 
     private AngleCalculationType angle;
     private int asrRatio;
@@ -42,6 +46,7 @@ public class TimeCalculator {
     private double height;
     private Double timezone;
     private Double julianDay;
+    private boolean umElQuraRamadanAdjustment;
 
     /**
      * Like calling {@code timeCalculationMethod(angle, false, TimeAdjustment.TWO_MINUTES_ZUHR)}.
@@ -66,6 +71,11 @@ public class TimeCalculator {
         this.angle = angle;
         this.asrRatio = hanafiAsrRatio ? ASR_RATIO_HANAFI : ASR_RATIO_MAJORITY;
         this.adjustments = adjustments;
+        return this;
+    }
+
+    public TimeCalculator umElQuraRamadanAdjustment(boolean umElQuraRamadanAdjustment) {
+        this.umElQuraRamadanAdjustment = umElQuraRamadanAdjustment;
         return this;
     }
 
@@ -94,7 +104,7 @@ public class TimeCalculator {
      */
     public TimeCalculator date(GregorianCalendar date) {
         this.julianDay = JulianDayUtil.gregorianToJulianDay(date.get(YEAR),
-            date.get(MONTH) + 1, date.get(DAY_OF_MONTH));
+                date.get(MONTH) + 1, date.get(DAY_OF_MONTH));
         return this;
     }
 
@@ -129,15 +139,20 @@ public class TimeCalculator {
         double declinationDegrees = JulianDayUtil.sunDeclinationDegrees(julianDay);
         double transit = zuhr(this.longitude, this.timezone, JulianDayUtil.calculateTimeUponGeolocationPoint(julianDay));
         double latitude = this.latitude;
-        return new PrayerTimes((long) (julianDay - JAVA_DATE_EPOCH_JD) * HOURS_IN_DAY * MINUTE_IN_HOUR *
-            SECOND_IN_MINUTE * MILLIS_IN_SECOND,
-            fajr(transit, latitude, declinationDegrees, angle.getFajrAngle()) + adjustments
-                .getFajr() / MINUTE_IN_HOUR_DOUBLE,
-            sunrise(transit, latitude, declinationDegrees, this.height) + adjustments.getSunrise() / MINUTE_IN_HOUR_DOUBLE,
-            transit + adjustments.getZuhr() / MINUTE_IN_HOUR_DOUBLE,
-            asr(transit, latitude, declinationDegrees, this.asrRatio) + adjustments.getAsr() / MINUTE_IN_HOUR_DOUBLE,
-            maghrib(transit, latitude, declinationDegrees, this.height) + adjustments.getMaghrib() / MINUTE_IN_HOUR_DOUBLE,
-            isha(transit, latitude, declinationDegrees, angle.getIshaAngle()) + adjustments.getIsha() / MINUTE_IN_HOUR_DOUBLE);
+        double isha = isha(transit, latitude, declinationDegrees, angle.getIshaAngle());
+        if (UMM_AL_QURA == angle) {
+            double ishaAdjustValue = umElQuraRamadanAdjustment ? UMM_AL_QURA_RAMADAN_ISHA_ADJUSTMENT : UMM_AL_QURA_ISHA_ADJUSTMENT;
+            isha = maghrib(transit, latitude, declinationDegrees, this.height) + ishaAdjustValue ;
+        }
+        PrayerTimes prayerTimes = new PrayerTimes((long) (julianDay - JAVA_DATE_EPOCH_JD) * HOURS_IN_DAY * MINUTE_IN_HOUR *
+                SECOND_IN_MINUTE * MILLIS_IN_SECOND,
+                fajr(transit, latitude, declinationDegrees, angle.getFajrAngle()) + adjustments
+                        .getFajr() / MINUTE_IN_HOUR_DOUBLE,
+                sunrise(transit, latitude, declinationDegrees, this.height) + adjustments.getSunrise() / MINUTE_IN_HOUR_DOUBLE,
+                transit + adjustments.getZuhr() / MINUTE_IN_HOUR_DOUBLE,
+                asr(transit, latitude, declinationDegrees, this.asrRatio) + adjustments.getAsr() / MINUTE_IN_HOUR_DOUBLE,
+                maghrib(transit, latitude, declinationDegrees, this.height) + adjustments.getMaghrib() / MINUTE_IN_HOUR_DOUBLE,
+                isha + adjustments.getIsha() / MINUTE_IN_HOUR_DOUBLE);
+        return prayerTimes;
     }
-
 }
