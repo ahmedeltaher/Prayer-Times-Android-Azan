@@ -6,7 +6,7 @@ import com.azan.types.BaseTimeAdjustmentType;
  * Created by AhmedEltaher on 10/11/16.
  */
 
-class TimeAdjustment {
+public class TimeAdjustment {
     /**
      * Each time is zero , default adjustment.
      */
