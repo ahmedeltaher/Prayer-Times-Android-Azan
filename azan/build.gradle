@@ -8,7 +8,7 @@ group='com.github.ahmedeltaher'
 ext {
     PUBLISH_GROUP_ID = 'com.eltaher'
     PUBLISH_ARTIFACT_ID = 'azan'
-    PUBLISH_VERSION = '3'
+    PUBLISH_VERSION = '3.0'
 }
 android {
     compileSdkVersion 28
@@ -17,7 +17,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.0"
+        versionName "3.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
