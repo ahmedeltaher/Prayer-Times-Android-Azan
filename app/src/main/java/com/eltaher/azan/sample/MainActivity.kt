@@ -12,7 +12,6 @@ import com.azan.Azan
 import com.azan.Method
 import com.azan.astrologicalCalc.Location
 import com.azan.astrologicalCalc.SimpleDate
-import com.azan.astrologicalCalc.SimpleTime
 import sample.azan.eltaher.com.azan.R
 import java.util.*
 
@@ -52,39 +51,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun azan() {
-        //Azan azan = new Azan(new Location(24.4833, 54.35, 4, 0 ), m);
-        //azan.setCalendar(Calendar.getInstance());
-        /* Call the main function to fill the Time times array of
-         * structures */
-
-        val qibla: SimpleTime
         val today = SimpleDate(GregorianCalendar())
         val location = Location(30.045411, 31.236735, 2.0, 0)
         val azan = Azan(location, Method.EGYPT_SURVEY)
         val prayerTimes = azan.getPrayerTimes(today)
-
-        /* Call functions for other prayer times and qibla */
         val imsaak = azan.getImsaak(today)
-        val nextFajr = azan.getNextDayFajr(today)
-        val nextImsaak = azan.getNextDayImsaak(today)
-        qibla = azan.northQibla
-        print("\nQibla\t=$qibla\n")
-        print(prayerTimes)
-        println("Today's Imsaak: $imsaak")
-        println("Tomorrow's Fajr: $nextFajr")
-        println("Tomorrow's Imsaak: $nextImsaak")
-        //System.out.println(Utils.PI + "\n");
-        //System.out.println(Math.PI + "\n");
-
-        println("---> ----------------------------------------")
+        println("----------------results------------------------")
         println("date ---> " + today.day + " / " + today.month + " / " + today.year)
+        println("imsaak ---> $imsaak")
         println("Fajr ---> " + prayerTimes.fajr())
         println("sunrise --->" + prayerTimes.shuruq())
         println("Zuhr --->" + prayerTimes.thuhr())
         println("Asr --->" + prayerTimes.assr())
         println("Maghrib --->" + prayerTimes.maghrib())
         println("ISHA  --->" + prayerTimes.ishaa())
-        println("---> ----------------------------------------")
+        println("----------------------------------------")
 
     }
 }
