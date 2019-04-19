@@ -5,14 +5,14 @@ import java.util.*
 
 
 /**
- * This the main class of the JITL library. You can use static methods
- * to do qibla calculation but you will need to create a Azan instance
+ * This the main class of the Azan library. You can use static methods
+ * to do qibla angle calculation but you will need to create a Azan instance
  * to calculate prayer times for a specific location, using a specified method.
  *
  */
 class Azan
 /**
- * Creates the jitl main class
+ * Creates the Azan main class
  * @param location the location
  * @param method the method used in the calculation. You can use
  * predefined methods for example `Method.MUSLIM_LEAGUE` or creates
@@ -26,11 +26,11 @@ class Azan
     private val astroCache = Astro()
 
     /**
-     * generate qibla direction
-     * @return a SimpleTime object containing qibla direction for the current location
+     * generate AdjustmentTimeToQiblaDirection direction
+     * @return a SimpleTime object containing AdjustmentTimeToQiblaDirection direction for the current location
      */
-    val northQibla: SimpleTime
-        get() = getNorthQibla(location!!)
+    val northAdjustmentTimeToQiblaDirection: SimpleTime
+        get() = getAdjustmentTimeToQiblaDirection(location!!)
 
     /**
      * changes the location
@@ -578,7 +578,7 @@ class Azan
     companion object {
 
         /**
-         * minor version of jitl
+         * minor version of Azan
          */
         /**
          * Minor version of Azan
@@ -587,7 +587,7 @@ class Azan
         val minorVersion = 0
 
         /**
-         * major version of jitl
+         * major version of Azan
          */
         /**
          * Major version of Azan
@@ -753,15 +753,15 @@ class Azan
             return DayCouple(ld, jd)
         }
 
-        /* Obtaining the direction of the shortest distance towards Qibla by uMath.sing the
+        /* Obtaining the direction of the shortest distance towards Qibla angle by uMath.sing the
 	 * great circle formula */
 
         /**
-         * generate qibla direction
+         * generate AdjustmentTimeToQiblaDirection direction
          * @param loc location where to calculate
-         * @return a SimpleTime object containg qibla direction
+         * @return a SimpleTime object containg qibla angle direction
          */
-        fun getNorthQibla(loc: Location): SimpleTime {
+        fun getAdjustmentTimeToQiblaDirection(loc: Location): SimpleTime {
             /* xxxthamer: reduce Utils.DEG_TO_RAD usage */
             val num: Double
             val denom: Double
