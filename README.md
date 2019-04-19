@@ -74,7 +74,7 @@ allprojects {
  
  ```
  	dependencies {
- 	        implementation 'com.github.ahmedeltaher:Azan:3.0'
+ 	        implementation 'com.github.ahmedeltaher:Azan:3.0.0'
  	}
  ```
 
