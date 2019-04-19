@@ -6,7 +6,7 @@
 ![Build](https://img.shields.io/badge/Azan-jitpack.io-blue.svg)
 
 
-**what is azan ?** 
+**what is Azan ?** 
 
 ``` 
 The Muslim call to ritual prayer made by a muezzin from the minaret of a mosque
@@ -74,28 +74,28 @@ allprojects {
  
  ```
  	dependencies {
- 	        compile 'com.github.ahmedeltaher:Azan:2.1'
+ 	        implementation 'com.github.ahmedeltaher:Azan:3.0'
  	}
  ```
 
 **Example how to get prayer times**
 
 ```
-GregorianCalendar date = new GregorianCalendar();
-
-PrayerTimes prayerTimes = new TimeCalculator().date(date).location(-6.38043079,106.85337984, 0,7).timeCalculationMethod(EGYPT).calculateTimes();
-
-prayerTimes.setUseSecond(true);
-
-prayerTimes.getPrayTime(PrayersType.FAJR);
-
-prayerTimes.getPrayTime(PrayersType.SUNRISE);
-
-prayerTimes.getPrayTime(PrayersType.ZUHR);
-
-prayerTimes.getPrayTime(PrayersType.MAGHRIB);
-
-prayerTimes.getPrayTime(PrayersType.ISHA);
+       val today = SimpleDate(GregorianCalendar())
+       val location = Location(30.045411, 31.236735, 2.0, 0)
+       val azan = Azan(location, Method.EGYPT_SURVEY)
+       val prayerTimes = azan.getPrayerTimes(today)
+       val imsaak = azan.getImsaak(today)
+       println("----------------results------------------------")
+       println("date ---> " + today.day + " / " + today.month + " / " + today.year)
+       println("imsaak ---> $imsaak")
+       println("Fajr ---> " + prayerTimes.fajr())
+       println("sunrise --->" + prayerTimes.shuruq())
+       println("Zuhr --->" + prayerTimes.thuhr())
+       println("Asr --->" + prayerTimes.assr())
+       println("Maghrib --->" + prayerTimes.maghrib())
+       println("ISHA  --->" + prayerTimes.ishaa())
+       println("----------------------------------------")
 ```
 
  ## LICENSE
