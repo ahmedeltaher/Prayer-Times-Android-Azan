@@ -11,8 +11,8 @@
 (or now often played from a recording) . Muslims have 5 prayers per day , at each time all muslims are notified by Azan ,  
 to pray. first Muslims used to calcualte prayer time with sun raise and sun shadows ,  
 but to simplyied it and make it moreaccurent speacilly in cloudy cities , Mosques currently use a complex calcualtion based on latitude ,  
-longitude,height,timezone, sun raise time.  
-```  
+longitude,height,timezone, sun raise time.
+```
   
   
   
@@ -64,16 +64,36 @@ Add it to dependencies in your gradle file
 > 			           }
 > 			         }
 
- - in your `build.gradle` of your `app` module , Add the dependency 
-			**`implementation 'com.github.ahmedeltaher:Azan:3.0'`**
+ - in your `build.gradle` of your `app` module , Add the dependency
+ 
+	**`implementation 'com.github.ahmedeltaher:Azan:3.0'`**
    
 
 **Example how to get prayer times**  
   
-```  
- val today = SimpleDate(GregorianCalendar()) val location = Location(30.045411, 31.236735, 2.0, 0) val azan = Azan(location, Method.EGYPT_SURVEY) val prayerTimes = azan.getPrayerTimes(today) val imsaak = azan.getImsaak(today) println("----------------results------------------------") println("date ---> " + today.day + " / " + today.month + " / " + today.year) println("imsaak ---> $imsaak") println("Fajr ---> " + prayerTimes.fajr()) println("sunrise --->" + prayerTimes.shuruq()) println("Zuhr --->" + prayerTimes.thuhr()) println("Asr --->" + prayerTimes.assr()) println("Maghrib --->" + prayerTimes.maghrib()) println("ISHA  --->" + prayerTimes.ishaa()) println("----------------------------------------")```  
-  
-  ## LICENSE  
+ 
+``` 
+val today = SimpleDate(GregorianCalendar())
+val location = Location(30.045411, 31.236735, 2.0, 0)
+val azan = Azan(location, Method.EGYPT_SURVEY)
+val prayerTimes = azan.getPrayerTimes(today)
+val imsaak = azan.getImsaak(today) 
+println("----------------results------------------------") 
+println("date ---> " + today.day + " / " + today.month + " / " + today.year)
+println("imsaak ---> $imsaak") println("Fajr ---> " + prayerTimes.fajr()) 
+println("sunrise --->" + prayerTimes.shuruq())
+println("Zuhr --->" + prayerTimes.thuhr())
+println("Asr --->" + prayerTimes.assr()) 
+println("Maghrib --->" + prayerTimes.maghrib())
+println("ISHA  --->" + prayerTimes.ishaa())
+println("----------------------------------------") 
+``` 
+
+
+
+
+
+## LICENSE  
   
 Ahmed Eltaher 2016  
   
