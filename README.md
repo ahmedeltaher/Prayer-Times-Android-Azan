@@ -1,6 +1,6 @@
 # **AZAN  **
   
-[![Android Arsenal](https://img.shields.io/badge/Android-Time%20Prayer-brightgreen.svg)](https://android-arsenal.com/details/1/5099)  [![Android Arsenal](https://img.shields.io/badge/Android Arsenal-Date & Time Pickers-orange.svg)](https://android-arsenal.com/details/1/7676)![LICENSE](https://img.shields.io/badge/License-Apache%20License%20V2.0-yellow.svg)  ![Build](https://img.shields.io/badge/Azan-jitpack.io-blue.svg)  ![Kotlin](https://img.shields.io/badge/Kotlin-1.3.x-blue.svg)  
+[![Android Arsenal](https://img.shields.io/badge/Android-Time%20Prayer-brightgreen.svg)](https://android-arsenal.com/details/1/5099)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Date%20&%20Time%20Pickers-orange.svg)](https://android-arsenal.com/details/1/7676)![LICENSE](https://img.shields.io/badge/License-Apache%20License%20V2.0-yellow.svg)  ![Build](https://img.shields.io/badge/Azan-jitpack.io-blue.svg)  ![Kotlin](https://img.shields.io/badge/Kotlin-1.3.x-blue.svg)  
   
   
   
