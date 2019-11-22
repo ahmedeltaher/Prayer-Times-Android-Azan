@@ -4,13 +4,13 @@
   
   
   
-**what is Azan ?**   
+**What is Azan ?**   
 The Muslim call to ritual prayer made by a muezzin from the minaret of a mosque (or now often played from a recording) . Muslims have 5 prayers per day, at each time all muslims are notified by Azan, to pray. first Muslims used to calcualte prayer time with sun raise and sun shadows, but to simplyied it and make it moreaccurent speacilly in cloudy cities, Mosques currently use a complex calcualtion based on latitude, longitude, height, timezone, sun raise time.
 
   
   
   
-## what is Azan library?  
+## What is Azan library?  
   
 Library aiming to calculate prayer time with one line code , if you implement prayer time application , there is no need to do this headache again .  
   
