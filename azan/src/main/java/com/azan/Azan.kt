@@ -714,7 +714,7 @@ class Azan
 
             part1 = mathhabValue + Math.tan(Utils.DEG_TO_RAD(Lat) - dec)
             if (part1 < 1 || Lat < 0)
-                part1 = mathhabValue - Math.tan(Utils.DEG_TO_RAD(Lat) - dec)
+                part1 = mathhabValue + Math.tan(Utils.DEG_TO_RAD(Lat) - dec)
 
             part2 = Utils.PI / 2.0 - Math.atan(part1)
             part3 = Math.sin(part2) - Math.sin(Utils.DEG_TO_RAD(Lat)) * Math.sin(dec)
