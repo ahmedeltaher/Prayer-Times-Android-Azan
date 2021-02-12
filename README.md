@@ -1,35 +1,31 @@
-# AZAN  
+# AZAN
   
-  
-[![Android Arsenal](https://img.shields.io/badge/Android-Time%20Prayer-brightgreen.svg)](https://android-arsenal.com/details/1/5099)  
-![LICENSE](https://img.shields.io/badge/License-Apache%20License%20V2.0-brightgreen.svg)  
-![Build](https://img.shields.io/badge/Azan-jitpack.io-blue.svg)  
-  
-  
-**what is Azan ?**   
-``` The Muslim call to ritual prayer made by a muezzin from the minaret of a mosque  
-(or now often played from a recording) . Muslims have 5 prayers per day , at each time all muslims are notified by Azan ,  
-to pray. first Muslims used to calcualte prayer time with sun raise and sun shadows ,  
-but to simplyied it and make it moreaccurent speacilly in cloudy cities , Mosques currently use a complex calcualtion based on latitude ,  
-longitude,height,timezone, sun raise time.
-```
+[![Android Arsenal](https://img.shields.io/badge/Android-Time%20Prayer-brightgreen.svg)](https://android-arsenal.com/details/1/5099)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Date%20&%20Time%20Pickers-orange.svg)](https://android-arsenal.com/details/1/7676)![LICENSE](https://img.shields.io/badge/License-Apache%20License%20V2.0-yellow.svg)  ![Build](https://img.shields.io/badge/Azan-jitpack.io-blue.svg)  ![Kotlin](https://img.shields.io/badge/Kotlin-1.3.x-blue.svg)  
   
   
   
-## what is Azan library?  
+**What is Azan ?**   
+The Muslim call to ritual prayer made by a muezzin from the minaret of a mosque (or now often played from a recording) . Muslims have 5 prayers per day, at each time all muslims are notified by Azan, to pray. first Muslims used to calcualte prayer time with sun raise and sun shadows, but to simplyied it and make it moreaccurent speacilly in cloudy cities, Mosques currently use a complex calcualtion based on latitude, longitude, height, timezone, sun raise time.
+
+  
+  
+  
+## What is Azan library?  
   
 Library aiming to calculate prayer time with one line code , if you implement prayer time application , there is no need to do this headache again .  
   
-![Azan](./azan-preview.png)  
+![azan-preview](https://user-images.githubusercontent.com/1812129/69456412-df2a3080-0d6a-11ea-98d8-0ebc180984d7.png)
   
--Islam Time prayers is every complex to calculate , cause there is many variables in this calculations like :  
+Islam Time prayers is every complex to calculate, cause there is many variables in this calculations like:  
   
 - **latitude**  
 - **longitude**  
 - **timezone**  
 - **height**  
 - **The Way of Calculation**   
-you can determin your latitude, longitude, timezone, height, The Way of Calculation .  
+
+
+Azan library enables you to determin latitude, longitude, timezone, height, The Way of Calculation as Inputes. 
   
   
 ## Supported Calculation Methods :  
@@ -60,9 +56,9 @@ Add it to dependencies in your gradle file
 >      repositories { 
 >                           maven { 
 >                                     url 'https://jitpack.io' 
-> 			                        }
-> 			           }
+> 			                      }
 > 			         }
+> 			       }
 
  - in your `build.gradle` of your `app` module , Add the dependency
  
