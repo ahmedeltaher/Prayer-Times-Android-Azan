@@ -5,18 +5,19 @@
   
   
 **What is Azan ?**   
-The Muslim call to ritual prayer made by a muezzin from the minaret of a mosque (or now often played from a recording) . Muslims have 5 prayers per day, at each time all muslims are notified by Azan, to pray. first Muslims used to calcualte prayer time with sun raise and sun shadows, but to simplyied it and make it moreaccurent speacilly in cloudy cities, Mosques currently use a complex calcualtion based on latitude, longitude, height, timezone, sun raise time.
+The Muslim call to ritual prayer made by a muezzin from the minaret of a mosque (or now often played from a recording). Muslims are supposed to pray five times a day. At each time Azan will send a notification to pray. At first, Muslims used to calculate prayer times with sun raise and sun shadows, but to simplify it and make it more accurate, specially in cloudy cities or places where calculating is hard. Mosques currently use a complex calculation based on latitude, longitude, height, timezone and sunrise time.
 
   
   
   
 ## What is Azan library?  
+
+Azan aims to calculate prayer times with no hassle, **using a single line of code**. It does the calculation so whenever you want to implement a prayer time application you won't need to go through this headache again.
   
-Library aiming to calculate prayer time with one line code , if you implement prayer time application , there is no need to do this headache again .  
   
 ![azan-preview](https://user-images.githubusercontent.com/1812129/69456412-df2a3080-0d6a-11ea-98d8-0ebc180984d7.png)
   
-Islam Time prayers is every complex to calculate, cause there is many variables in this calculations like:  
+Islam Time prayers is very complex to calculate. There are many variables in the calculation, like:  
   
 - **latitude**  
 - **longitude**  
@@ -25,7 +26,7 @@ Islam Time prayers is every complex to calculate, cause there is many variables 
 - **The Way of Calculation**   
 
 
-Azan library enables you to determin latitude, longitude, timezone, height, The Way of Calculation as Inputes. 
+Azan library allows you to determine latitude, longitude, timezone, height, and takes `The Way of Calculation` as an input. 
   
   
 ## Supported Calculation Methods :  
@@ -38,7 +39,7 @@ Azan library enables you to determin latitude, longitude, timezone, height, The 
 | Egyptian General Authority of Survey                 | 19.5                 | 17.5                                          |  
 | University of Islamic Sciences, Karachi              | 18                   | 18                                            |  
 | Islamic Society of North America (ISNA)              | 15                   | 15                                            |  
-| Ithna Ashari                                         | 16                      | 14                                            |  
+| Ithna Ashari                                         | 16                   | 14                                            |  
 | Institute of Geophysics, University of Tehran        | 17.7                 | 14                                            |  
 | UOIF (Union des organisations islamiques de France)  | 12                   | 12                                            |  
 | Kuwait Calc method                                   | 18                   | 17.5                                          |  
@@ -46,27 +47,32 @@ Azan library enables you to determin latitude, longitude, timezone, height, The 
   
 ## How to use ?  
   
-Add it to dependencies in your gradle file   
-  
-- Add it in your root `build.gradle` at the end of repositories:  
-  
-  - in your `allprojects` section , you have to add  `maven { url 'https://jitpack.io' }`   
+Add it to dependencies in your gradle file.
 
->     allprojects {  
->      repositories { 
->                           maven { 
->                                     url 'https://jitpack.io' 
-> 			                      }
-> 			         }
-> 			       }
+### Jitpack
+Add `jitpack` as one of your maven repositories:
 
- - in your `build.gradle` of your `app` module , Add the dependency
- 
-	**`implementation 'com.github.ahmedeltaher:Azan:3.0'`**
-   
 
-**Example how to get prayer times**  
-  
+```
+repositories {
+   mavenCentral()
+   // Other repositories
+   maven("https://jitpack.io")
+}
+```
+
+If you're in Android, preferably add it to your `root` gradle file.
+
+### Dependency
+
+After adding Jitpack, add this line to your dependencies:
+
+```
+implementation("com.github:ahmedeltaher:Azan:3.0")
+```
+
+### Getting prayer times
+     
  
 ``` 
 val today = SimpleDate(GregorianCalendar())
@@ -84,8 +90,6 @@ println("Maghrib --->" + prayerTimes.maghrib())
 println("ISHA  --->" + prayerTimes.ishaa())
 println("----------------------------------------") 
 ``` 
-
-
 
 
 
