@@ -22,7 +22,7 @@ dev = [
 azan-mcp = "azan_mcp.server:main"
 
 [project.urls]
-Homepage = "https://github.com/youruser/azan-mcp"
+Homepage = "https://github.com/ahmedeltaher/azan-mcp"
 
 [build-system]
 requires = ["hatchling"]

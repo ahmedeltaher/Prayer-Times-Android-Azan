@@ -98,7 +98,7 @@ def _get_ramadan_dates_impl(gregorian_year: int) -> dict:
         try:
             g_start = Hijri(hijri_year, 9, 1).to_gregorian()
             if g_start.year == gregorian_year:
-                g_end = Hijri(hijri_year, 9, 29).to_gregorian()
+                g_end = Hijri(hijri_year, 10, 1).to_gregorian() - timedelta(days=1)
                 return {
                     "data": {
                         "start":      f"{g_start.year:04d}-{g_start.month:02d}-{g_start.day:02d}",
