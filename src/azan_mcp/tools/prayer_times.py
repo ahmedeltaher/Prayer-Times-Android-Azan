@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
-
+from azan_mcp.data.iran_cities import lookup_city, IRAN_CAPITALS
 from mcp.server.fastmcp import FastMCP
 
 from azan_mcp.config import UserConfig, get_config
@@ -19,7 +19,8 @@ from azan_mcp.prayer_engine import (
 
 logger = logging.getLogger(__name__)
 
-PRAYER_ORDER = ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"]
+# Yeroolee hundaa tartiiba qulqulluun tarreessuuf:
+PRAYER_ORDER = ["fajr", "sunrise", "dhuhr", "asr", "sunset", "maghrib", "isha", "midnight"]
 FARD_PRAYERS = ["fajr", "dhuhr", "asr", "maghrib", "isha"]
 
 
@@ -36,24 +37,46 @@ def _meta(cfg: UserConfig | None = None) -> dict:
     }
 
 
-def _resolve(lat: float | None, lng: float | None) -> tuple[float, float]:
+def _resolve(
+        lat: float | None,
+        lng: float | None,
+        city: str | None = None
+) -> tuple[float, float, str | None]:
+    """Resolve coordinates via city name, explicit lat/lng, or default server configuration."""
+    if city:
+        match = lookup_city(city)
+        if match:
+            city_lat, city_lng, city_name = match
+            return city_lat, city_lng, city_name
     cfg = get_config()
-    return lat if lat is not None else cfg.latitude, lng if lng is not None else cfg.longitude
+    final_lat = lat if lat is not None else cfg.latitude
+    final_lng = lng if lng is not None else cfg.longitude
+    return final_lat, final_lng, None
 
 
 def _get_prayer_times_impl(
-    date_str: str | None = None,
-    latitude: float | None = None,
-    longitude: float | None = None,
+        date_str: str | None = None,
+        latitude: float | None = None,
+        longitude: float | None = None,
+        city: str | None = None,
 ) -> dict:
     cfg = get_config()
-    lat, lng = _resolve(latitude, longitude)
+    lat, lng, matched_city = _resolve(latitude, longitude, city)
     d = date.fromisoformat(date_str) if date_str else datetime.now(ZoneInfo(cfg.timezone)).date()
     times = compute_prayer_times(lat, lng, d, cfg.calculation_method.value, cfg.madhab.value, cfg.timezone)
-    return {
+
+    response = {
         "data": {k: v.isoformat() for k, v in times.items()},
         "meta": _meta(cfg),
+        "location": {
+            "latitude": lat,
+            "longitude": lng,
+            "matched_city": matched_city,
+            "resolved_from": "city_database" if matched_city else (
+                "explicit_coords" if latitude is not None else "server_default")
+        }
     }
+    return response
 
 
 def _get_next_prayer_impl(latitude: float | None = None, longitude: float | None = None) -> dict:
@@ -68,7 +91,7 @@ def _get_next_prayer_impl(latitude: float | None = None, longitude: float | None
                 "data": {"prayer": prayer.capitalize(), "time": times[prayer].isoformat()},
                 "meta": _meta(cfg),
             }
-    # All prayers passed today — return Fajr of tomorrow
+    # Yeroon salaataa hundi yoo darbe — Subhii boruu deebisa
     tomorrow = now.date() + timedelta(days=1)
     times_tomorrow = compute_prayer_times(lat, lng, tomorrow, cfg.calculation_method.value, cfg.madhab.value, cfg.timezone)
     return {
@@ -201,10 +224,11 @@ def _get_server_info_impl() -> dict:
 
 
 def _list_calculation_methods_impl() -> dict:
-    from azan_mcp.prayer_engine import METHOD_PARAMS
     methods = []
     for method_id, params in METHOD_PARAMS.items():
         entry: dict = {"id": method_id, "fajr_angle": params.fajr_angle}
+        if getattr(params, "maghrib_angle", None) is not None:
+            entry["maghrib_angle"] = params.maghrib_angle
         if params.isha_angle is not None:
             entry["isha_angle"] = params.isha_angle
         if params.isha_minutes is not None:
@@ -227,17 +251,31 @@ def register(mcp: FastMCP) -> None:
 
     @mcp.tool()
     def list_calculation_methods() -> dict:
-        """List all 10 supported prayer time calculation methods with their Fajr/Isha angles."""
+        """List all supported prayer time calculation methods with their Fajr, Maghrib, and Isha angles."""
         return _list_calculation_methods_impl()
 
     @mcp.tool()
     def get_prayer_times(
-        date: str | None = None,
-        latitude: float | None = None,
-        longitude: float | None = None,
+            date: str | None = None,
+            city: str | None = None,
+            latitude: float | None = None,
+            longitude: float | None = None,
     ) -> dict:
-        """Return all 5 daily prayer times plus Sunrise for a given date and location. Date is ISO 8601 (YYYY-MM-DD); defaults to today. Location defaults to configured coordinates."""
-        return _get_prayer_times_impl(date, latitude, longitude)
+        """
+        Return daily prayer times (including Sunset and Midnight) for a given location and date.
+
+        Parameters:
+        - date: ISO 8601 string (YYYY-MM-DD), defaults to today.
+        - city: Name of an Iranian provincial capital in Persian or common English spellings
+                (e.g., 'Tehran', 'Isfahan', 'Esfahan', 'مشهد', 'Shiraz', 'Tabriz').
+        - latitude / longitude: Optional coordinates.
+
+        Important instructions for Model:
+        If the user asks for an Iranian city that is NOT a provincial capital (e.g., Kashan, Kish, Babol),
+        the model should estimate its coordinates and pass them to latitude/longitude, or pass the nearest
+        provincial capital in the city parameter.
+        """
+        return _get_prayer_times_impl(date, latitude, longitude, city)
 
     @mcp.tool()
     def get_next_prayer(
@@ -270,7 +308,7 @@ def register(mcp: FastMCP) -> None:
         latitude: float | None = None,
         longitude: float | None = None,
     ) -> dict:
-        """Return a full month's prayer schedule. month is 1-12."""
+        """Return a full month's prayer schedule including Sunset and Midnight. month is 1-12."""
         return _get_monthly_prayer_calendar_impl(year, month, latitude, longitude)
 
     @mcp.tool()

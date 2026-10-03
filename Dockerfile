@@ -1,7 +1,8 @@
 FROM python:3.12-slim
 WORKDIR /app
-RUN pip install uv
+RUN pip install --no-cache-dir uv
 COPY pyproject.toml README.md ./
-RUN uv pip install --system .
 COPY src/ ./src/
+RUN uv pip install --system --no-cache tzdata .
+ENV PYTHONUNBUFFERED=1
 CMD ["python", "-m", "azan_mcp.server"]

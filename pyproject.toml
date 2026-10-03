@@ -9,6 +9,7 @@ keywords = ["mcp", "islamic", "prayer", "azan", "hijri", "quran"]
 dependencies = [
     "mcp[cli]>=1.27",
     "hijridate>=2.0",
+    "tzdata>=2026.5",
 ]
 
 [project.optional-dependencies]

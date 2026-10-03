@@ -3,6 +3,7 @@ Prayer time calculation engine — Meeus solar algorithm (stdlib only).
 
 Based on "Astronomical Algorithms" by Jean Meeus (2nd ed.) and the
 adhan-js reference implementation (batoulapps/adhan-js).
+Enhanced with Tehran Geophysics standards for Sunset, Maghrib (4.5°), and Midnight.
 """
 from __future__ import annotations
 
@@ -19,6 +20,7 @@ from zoneinfo import ZoneInfo
 @dataclass(frozen=True)
 class MethodParams:
     fajr_angle: float
+    maghrib_angle: float | None = None       # Angle below horizon for Maghrib (e.g. 4.5° for Tehran)
     isha_angle: float | None = None
     isha_minutes: int | None = None          # interval after Maghrib
     isha_minutes_ramadan: int | None = None  # interval after Maghrib during Ramadan
@@ -31,8 +33,8 @@ METHOD_PARAMS: dict[str, MethodParams] = {
     "egypt":        MethodParams(fajr_angle=19.5, isha_angle=17.5),
     "karachi":      MethodParams(fajr_angle=18.0, isha_angle=18.0),
     "isna":         MethodParams(fajr_angle=15.0, isha_angle=15.0),
-    "ithna_ashari": MethodParams(fajr_angle=16.0, isha_angle=14.0),
-    "tehran":       MethodParams(fajr_angle=17.7, isha_angle=14.0),
+    "ithna_ashari": MethodParams(fajr_angle=16.0, maghrib_angle=4.0, isha_angle=14.0),
+    "tehran":       MethodParams(fajr_angle=17.7, maghrib_angle=4.5, isha_angle=14.0),
     "uoif":         MethodParams(fajr_angle=12.0, isha_angle=12.0),
     "kuwait":       MethodParams(fajr_angle=18.0, isha_angle=17.5),
 }
@@ -166,9 +168,6 @@ def solar_noon_utc_minutes(lng: float, T: float) -> float:
 def hour_angle(lat: float, decl: float, angle: float) -> float:
     """
     Hour angle in degrees for a given depression/elevation angle.
-
-    Raises PolarDayError if the sun never sets (angle never reached going down).
-    Raises PolarNightError if the sun never rises (angle never reached going up).
     """
     cos_ha = (
         math.cos(_rad(90.0 + angle))
@@ -201,7 +200,7 @@ def _minutes_to_datetime(utc_minutes: float, ref_date: date, tz: ZoneInfo) -> da
 # ---------------------------------------------------------------------------
 
 def _is_ramadan(d: date) -> bool:
-    from hijridate import Gregorian  
+    from hijridate import Gregorian
     h = Gregorian(d.year, d.month, d.day).to_hijri()
     return h.month == 9
 
@@ -219,13 +218,8 @@ def compute_prayer_times(
     timezone: str,
 ) -> dict[str, datetime]:
     """
-    Compute the five daily prayer times plus Sunrise.
-
-    Returns a dict with keys: fajr, sunrise, dhuhr, asr, maghrib, isha.
-    All values are timezone-aware datetimes.
-
-    Raises PolarDayError or PolarNightError for extreme latitudes where
-    certain prayer times cannot be determined.
+    Compute daily prayer times, Sunset, and Midnight.
+    Returns: fajr, sunrise, dhuhr, asr, sunset, maghrib, isha, midnight.
     """
     if method not in METHOD_PARAMS:
         raise ValueError(
@@ -236,30 +230,35 @@ def compute_prayer_times(
     params = METHOD_PARAMS[method]
     tz = ZoneInfo(timezone)
 
-    # Julian century at solar noon for this date
+    # ۱. محاسبه مقادیر روز جاری
     jd = julian_day(date_.year, date_.month, date_.day)
     T  = julian_century(jd)
-
     decl    = solar_declination(T)
     noon_ut = solar_noon_utc_minutes(lng, T)
 
-    # Sunrise / Maghrib: standard 0.833° depression (refraction + solar disc)
+    # طلوع و غروب استاندارد خورشید بر اساس انحطاط 0.833 درجه (34' شکست جوی + 16' شعاع خورشید)
     ha_sun   = hour_angle(lat, decl, 0.833)
     ha_fajr  = hour_angle(lat, decl, params.fajr_angle)
     ha_asr   = asr_hour_angle(lat, decl, madhab)
 
-    sunrise_ut  = noon_ut - ha_sun   * 4.0
-    maghrib_ut  = noon_ut + ha_sun   * 4.0
-    fajr_ut     = noon_ut - ha_fajr  * 4.0
-    dhuhr_ut    = noon_ut + 1.0      # 1 min after solar noon (safety margin)
-    asr_ut      = noon_ut + ha_asr   * 4.0
+    sunrise_ut = noon_ut - ha_sun  * 4.0
+    sunset_ut  = noon_ut + ha_sun  * 4.0  # غروب واقعی قرص آفتاب
+    fajr_ut    = noon_ut - ha_fajr * 4.0
+    dhuhr_ut   = noon_ut + 1.0     # ۱ دقیقه احتیاط بعد از زوال
+    asr_ut     = noon_ut + ha_asr  * 4.0
 
-    # Isha
+    # اذان مغرب: اگر متد دارای زاویه اختصاصی باشد (مانند ۴.۵ درجه تهران) از آن استفاده می‌کند
+    if params.maghrib_angle is not None:
+        ha_maghrib = hour_angle(lat, decl, params.maghrib_angle)
+        maghrib_ut = noon_ut + ha_maghrib * 4.0
+    else:
+        maghrib_ut = sunset_ut
+
+    # عشاء
     if params.isha_angle is not None:
         ha_isha = hour_angle(lat, decl, params.isha_angle)
         isha_ut = noon_ut + ha_isha * 4.0
     else:
-        # Interval-based (Umm al-Qura)
         minutes = (
             params.isha_minutes_ramadan
             if (params.isha_minutes_ramadan and _is_ramadan(date_))
@@ -267,13 +266,37 @@ def compute_prayer_times(
         )
         isha_ut = maghrib_ut + (minutes or 90)
 
+    # ۲. تبدیل زمان‌های امروز به شیء datetime
+    dt_fajr    = _minutes_to_datetime(fajr_ut,    date_, tz)
+    dt_sunrise = _minutes_to_datetime(sunrise_ut, date_, tz)
+    dt_dhuhr   = _minutes_to_datetime(dhuhr_ut,   date_, tz)
+    dt_asr     = _minutes_to_datetime(asr_ut,     date_, tz)
+    dt_sunset  = _minutes_to_datetime(sunset_ut,  date_, tz)
+    dt_maghrib = _minutes_to_datetime(maghrib_ut, date_, tz)
+    dt_isha    = _minutes_to_datetime(isha_ut,    date_, tz)
+
+    # ۳. محاسبه اذان صبح فردا برای به دست آوردن نیمه شب شرعی دقیق (فرمول ژئوفیزیک تهران)
+    tomorrow = date_ + timedelta(days=1)
+    jd_tom = julian_day(tomorrow.year, tomorrow.month, tomorrow.day)
+    T_tom  = julian_century(jd_tom)
+    decl_tom    = solar_declination(T_tom)
+    noon_tom_ut = solar_noon_utc_minutes(lng, T_tom)
+    ha_fajr_tom = hour_angle(lat, decl_tom, params.fajr_angle)
+    fajr_tom_ut = noon_tom_ut - ha_fajr_tom * 4.0
+    dt_fajr_tom = _minutes_to_datetime(fajr_tom_ut, tomorrow, tz)
+
+    # نیمه شب شرعی = غروب آفتاب امروز + نصف فاصله تا اذان صبح فردا
+    dt_midnight = dt_sunset + (dt_fajr_tom - dt_sunset) / 2
+
     return {
-        "fajr":    _minutes_to_datetime(fajr_ut,    date_, tz),
-        "sunrise": _minutes_to_datetime(sunrise_ut, date_, tz),
-        "dhuhr":   _minutes_to_datetime(dhuhr_ut,   date_, tz),
-        "asr":     _minutes_to_datetime(asr_ut,     date_, tz),
-        "maghrib": _minutes_to_datetime(maghrib_ut, date_, tz),
-        "isha":    _minutes_to_datetime(isha_ut,    date_, tz),
+        "fajr":     dt_fajr,
+        "sunrise":  dt_sunrise,
+        "dhuhr":    dt_dhuhr,
+        "asr":      dt_asr,
+        "sunset":   dt_sunset,    # غروب آفتاب
+        "maghrib":  dt_maghrib,   # اذان مغرب
+        "isha":     dt_isha,
+        "midnight": dt_midnight,  # نیمه شب شرعی
     }
 
 

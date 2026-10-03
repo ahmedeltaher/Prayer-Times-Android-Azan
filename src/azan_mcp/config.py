@@ -53,10 +53,10 @@ class UserConfig:
 
 
 DEFAULT_CONFIG = UserConfig(
-    latitude=21.3891,
-    longitude=39.8579,
-    timezone="Asia/Riyadh",
-    calculation_method=CalculationMethod.UMM_AL_QURA,
+    latitude=35.6892,
+    longitude=51.3890,
+    timezone="Asia/Tehran",
+    calculation_method=CalculationMethod.TEHRAN,
     madhab=Madhab.SHAFI,
 )
 
