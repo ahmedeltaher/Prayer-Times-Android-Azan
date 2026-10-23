@@ -44,6 +44,19 @@ def test_zakat_missing_price_raises():
         _calculate_zakat_impl("cash", 5_000)
 
 
+@pytest.mark.parametrize(
+    ("wealth_type", "prices"),
+    [
+        ("cash", {"silver_price_per_gram": -1.0}),
+        ("gold", {"gold_price_per_gram": 0.0}),
+        ("silver", {"silver_price_per_gram": float("nan")}),
+    ],
+)
+def test_zakat_rejects_nonpositive_or_nonfinite_nisab_prices(wealth_type, prices):
+    with pytest.raises(ValueError, match="price_per_gram must be a finite positive value"):
+        _calculate_zakat_impl(wealth_type, 100.0, **prices)
+
+
 def test_zakat_invalid_type_raises():
     with pytest.raises(ValueError, match="wealth_type"):
         _calculate_zakat_impl("livestock", 1_000, gold_price_per_gram=60.0)

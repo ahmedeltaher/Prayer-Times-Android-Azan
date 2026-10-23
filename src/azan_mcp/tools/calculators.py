@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import math
 from datetime import date, datetime, timedelta
 from fractions import Fraction
 from zoneinfo import ZoneInfo
@@ -42,8 +43,14 @@ def _calculate_zakat_impl(
     valid_types = ("cash", "gold", "silver", "trade_goods")
     if wealth_type not in valid_types:
         raise ValueError(f"wealth_type must be one of: {', '.join(valid_types)}. Got: {wealth_type!r}")
-    if amount <= 0:
-        raise ValueError(f"amount must be positive, got {amount}")
+    if not math.isfinite(amount) or amount <= 0:
+        raise ValueError(f"amount must be a finite positive value, got {amount}")
+    for price_name, price in (
+        ("gold_price_per_gram", gold_price_per_gram),
+        ("silver_price_per_gram", silver_price_per_gram),
+    ):
+        if price is not None and (not math.isfinite(price) or price <= 0):
+            raise ValueError(f"{price_name} must be a finite positive value, got {price}")
 
     nisab_value: float
     nisab_basis: str
